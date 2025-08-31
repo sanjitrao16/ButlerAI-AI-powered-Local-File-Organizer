@@ -1,0 +1,8 @@
+pandas
+python-docx
+python-pptx
+openpyxl
+PyMuPDF
+ollama
+scikit-learn
+pytesseract

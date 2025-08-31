@@ -1,0 +1,8 @@
+butlerai/
+
+.vscode/
+
+__pycache__/
+*.pyc
+
+sample_folder/
