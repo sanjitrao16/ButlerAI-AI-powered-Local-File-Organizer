@@ -27,13 +27,15 @@ def isQuit(user_input):
 
 
 def start():
-  print('''+======================================+
-|                                      |
-|                                      |
-|   Butler AI - Local File Organizer   |
-|                                      |
-|                                      |
-+======================================+''')
+  print("+======================================+")
+  print("|                                      |")
+  print("|                                      |")
+  print("|   Butler AI - Local File Organizer   |")
+  print("|                                      |")
+  print("|                                      |")
+  print("+======================================+")
+
+
   userQuit = input("Press 'q' to quit the application or any other key to continue:")
   if (isQuit(userQuit)):
     return
@@ -55,15 +57,14 @@ def start():
   directory_path = input("Enter the path of the directory to organize: ")
 
   # Checking the existence of the given directory
-
   while (not os.path.isdir(directory_path)):
     print(f"The directory {directory_path} doesn't exist. Enter a valid directory path")
     directory_path = input("Enter a valid path of the directory to organzie: ")
   
   # Listing the files in the directory
-  print('''+===========================================+
-|  The files present in the directory are   |   
-+===========================================+''')
+  print("+===========================================+")
+  print("|  The files present in the directory are   |")
+  print("+===========================================+")
   
   print(directory_path)
   display_directory_tree(directory_path)
