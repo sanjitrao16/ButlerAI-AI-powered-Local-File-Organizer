@@ -1,11 +1,18 @@
 import sys,os
 import threading
 import ollama
-from utils.file_utils import (display_directory_tree)
+from utils.file_utils import (
+  display_directory_tree,
+  separate_files_by_type
+)
 
 local_client = ollama.Client(host="http://localhost:11434")
 model_ready = False
 model_failed = False
+
+rename_only = False
+organize_only = False
+rename_and_organize = False
 
 def initialize_model():
   global model_ready,model_failed
@@ -24,6 +31,12 @@ def isQuit(user_input):
     print("Exiting application...")
     return True
   return False
+
+def display_available_modes():
+  print("\n\tSelect one of the options in which you want your directory to be organized:\t\n")
+  print("1. Rename each file (Type 1).")
+  print("2. Organize files into folders (Type 2).")
+  print("3. Rename files and organize into folders (Type 3).")
 
 
 def start():
@@ -62,14 +75,41 @@ def start():
     directory_path = input("Enter a valid path of the directory to organzie: ")
   
   # Listing the files in the directory
+  print("\n")
   print("+===========================================+")
   print("|  The files present in the directory are   |")
   print("+===========================================+")
+  print("\n")
   
   print(directory_path)
   display_directory_tree(directory_path)
 
+  '''
+  User has three options
+  1. To rename the files
+  2. To only organize into folders
+  3. To rename and organize
+  
+  '''
 
+  display_available_modes()
+  mode = int(input("Enter an option: "))
+
+  if (mode == 1):
+    rename_only = True
+  elif (mode == 2):
+    organize_only = True
+  else:
+    rename_and_organize = True
+  
+  # Separating files by types (images, text, video, audio)
+  video_files, audio_files, image_files, text_files = separate_files_by_type(directory_path)
+
+  print("Files sorted by types:")
+  print(f"Text Files: {text_files}")
+  print(f"Image Files: {image_files}")
+  print(f"Video Files: {video_files}")
+  print(f"Audio Files: {audio_files}")
 
 
 if __name__ == "__main__":
