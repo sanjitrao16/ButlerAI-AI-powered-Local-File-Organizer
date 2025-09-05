@@ -3,7 +3,8 @@ import threading
 import ollama
 from utils.file_utils import (
   display_directory_tree,
-  separate_files_by_type
+  separate_files_by_type,
+  process_text_files
 )
 
 local_client = ollama.Client(host="http://localhost:11434")
@@ -102,14 +103,21 @@ def start():
   else:
     rename_and_organize = True
   
-  # Separating files by types (images, text, video, audio)
+  # Separating files by types (video, audio, image, text)
   video_files, audio_files, image_files, text_files = separate_files_by_type(directory_path)
 
-  print("Files sorted by types:")
-  print(f"Text Files: {text_files}")
-  print(f"Image Files: {image_files}")
-  print(f"Video Files: {video_files}")
-  print(f"Audio Files: {audio_files}")
+  # print("\nFiles sorted by types:\n")
+  # print(f"Text Files: {text_files}\n")
+  # print(f"Image Files: {image_files}\n")
+  # print(f"Video Files: {video_files}\n")
+  # print(f"Audio Files: {audio_files}\n")
+
+  # Processing text files
+
+  text_content = process_text_files(text_files,workers=4)
+
+  # for f,snippet in text_content.items():
+  #   print(f"\n--- {f} ---\n{snippet[:200]}...")
 
 
 if __name__ == "__main__":
