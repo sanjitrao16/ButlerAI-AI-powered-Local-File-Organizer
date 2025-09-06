@@ -4,7 +4,7 @@ import sys
 import re
 import concurrent.futures
 
-from file_processing import (
+from .file_processing import (
     process_txt_file,
     process_doc_file,
     process_pdf_file,
@@ -13,6 +13,7 @@ from file_processing import (
 )
 
 def extract_text_content(file_path):
+    ''' Extracting file content for different types of files '''
     ext = os.path.splitext(file_path)[1].lower()
     try:
         if ext in [".txt",".md"]:
@@ -30,7 +31,8 @@ def extract_text_content(file_path):
 
 
 def display_directory_tree(dir_path, prefix=""):
-    contents = sorted(os.listdir(dir_path))
+    ''' Displaying the file directory in a directory-tree structure '''
+    contents = sorted([f for f in os.listdir(dir_path) if not f.startswith(".")]) #Ignores hidden files (UNIX naming convention)
     pointers = ['├── '] * (len(contents) - 1) + ['└── ']
     for pointer, name in zip(pointers, contents):
         path = os.path.join(dir_path, name)
@@ -40,7 +42,7 @@ def display_directory_tree(dir_path, prefix=""):
             display_directory_tree(path, prefix + extension)
 
 
-def separate_files_by_type(dir_path):
+def separate_files_by_type(files):
     '''
     Text-File formats: .pdf, .docx, .pptx, .txt, .csv, .md, .xlsx
     Image-File formats: .jpg, .jpeg, .png, .webp, .gif
@@ -53,10 +55,6 @@ def separate_files_by_type(dir_path):
     video_exts = (".mp4")
     audio_exts = (".mp3")
 
-    files = [
-        os.path.join(dir_path,name) for name in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path,name))
-    ]
-
     text_files = [file for file in files if os.path.splitext(file)[1].lower() in text_exts]
     image_files = [file for file in files if os.path.splitext(file)[1].lower() in image_exts]
     video_files = [file for file in files if os.path.splitext(file)[1].lower() in video_exts]
@@ -64,7 +62,16 @@ def separate_files_by_type(dir_path):
     
     return video_files,audio_files,image_files,text_files
 
+def exclude_hidden_files(dir_path):
+    ''' Excludes hidden files as per UNIX File Naming convention that is files starting with "." '''
+    files = []
+    for file in os.listdir(dir_path):
+        if (os.path.isfile(os.path.join(dir_path,file)) and (not file.startswith("."))):
+            files.append(os.path.join(dir_path,file))
+    return files
+
 def process_text_files(text_files,workers=4):
+    ''' Processing text files parallely through concurrent processes to save time '''
     results = {}
     with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
         for file_path,content in executor.map(extract_text_content,text_files):

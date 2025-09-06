@@ -1,8 +1,10 @@
 import sys,os
 import threading
 import ollama
+
 from utils.file_utils import (
   display_directory_tree,
+  exclude_hidden_files,
   separate_files_by_type,
   process_text_files
 )
@@ -39,6 +41,15 @@ def display_available_modes():
   print("2. Organize files into folders (Type 2).")
   print("3. Rename files and organize into folders (Type 3).")
 
+def get_and_set_mode():
+  mode = int(input("Enter an option: "))
+
+  if (mode == 1):
+    rename_only = True
+  elif (mode == 2):
+    organize_only = True
+  else:
+    rename_and_organize = True
 
 def start():
   print("+======================================+")
@@ -75,6 +86,14 @@ def start():
     print(f"The directory {directory_path} doesn't exist. Enter a valid directory path")
     directory_path = input("Enter a valid path of the directory to organzie: ")
   
+  # Excluding hidden files from the directory list
+
+  ''' Note: The below function, excludes the hidden file as per UNIX file naming convention that is file names
+  which start with "."
+  '''
+
+  visible_files = exclude_hidden_files(directory_path)
+
   # Listing the files in the directory
   print("\n")
   print("+===========================================+")
@@ -82,7 +101,7 @@ def start():
   print("+===========================================+")
   print("\n")
   
-  print(directory_path)
+  print(os.path.abspath(directory_path))
   display_directory_tree(directory_path)
 
   '''
@@ -94,17 +113,10 @@ def start():
   '''
 
   display_available_modes()
-  mode = int(input("Enter an option: "))
-
-  if (mode == 1):
-    rename_only = True
-  elif (mode == 2):
-    organize_only = True
-  else:
-    rename_and_organize = True
+  get_and_set_mode()
   
   # Separating files by types (video, audio, image, text)
-  video_files, audio_files, image_files, text_files = separate_files_by_type(directory_path)
+  video_files, audio_files, image_files, text_files = separate_files_by_type(visible_files)
 
   # print("\nFiles sorted by types:\n")
   # print(f"Text Files: {text_files}\n")

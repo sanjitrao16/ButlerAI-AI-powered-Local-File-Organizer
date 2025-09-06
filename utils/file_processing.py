@@ -4,6 +4,7 @@ import pandas as pd
 from pptx import Presentation
 
 def process_txt_file(file_path):
+    ''' Processing text files like .txt and .md with the help of the built-in python file handling functions '''
     max_chars_to_read = 2500
     try:
         with open(file_path,"r",encoding="utf-8",errors="ignore") as f:
@@ -14,6 +15,7 @@ def process_txt_file(file_path):
         return None
 
 def process_doc_file(file_path):
+    ''' Processing word document files like .doc and .docx using the docx library '''
     try:
         word_doc = docx.Document(file_path)
         full_text = [para.text for para in word_doc.paragraphs]
@@ -23,6 +25,7 @@ def process_doc_file(file_path):
         return None
 
 def process_ppt_file(file_path):
+    ''' Processing presentation files like .ppt and .pptx using the python-pptx library '''
     try:
         ppt_file = Presentation(file_path)
         full_text = []
@@ -36,6 +39,7 @@ def process_ppt_file(file_path):
         return None
 
 def process_pdf_file(file_path):
+    ''' Processing PDF files like .pdf using the PyMuPDF library '''
     try:
         pdf_file = fitz.open(file_path)
         max_pages_to_read = 4
@@ -50,6 +54,7 @@ def process_pdf_file(file_path):
         return None
 
 def process_spreadsheet_file(file_path):
+    ''' Processing spreadsheet files like .xls, .xlsx and .csv using the pandas library '''
     try:
         if file_path.lower().endswith(".csv"):
             df = pd.read_csv(file_path)
