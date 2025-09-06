@@ -42,7 +42,7 @@ def process_pdf_file(file_path):
     ''' Processing PDF files like .pdf using the PyMuPDF library '''
     try:
         pdf_file = fitz.open(file_path)
-        max_pages_to_read = 4
+        max_pages_to_read = 5 #Maximum number of pages to read
         full_text = []
         for page_num in range(min(max_pages_to_read, len(pdf_file))):
             page = pdf_file.load_page(page_num)

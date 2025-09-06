@@ -1,6 +1,7 @@
 import sys,os
 import threading
 import ollama
+import time
 
 from utils.file_utils import (
   display_directory_tree,
@@ -9,24 +10,30 @@ from utils.file_utils import (
   process_text_files
 )
 
+from data_generation.text_file_data_generation import (
+  feed_text_files_data
+)
+
 local_client = ollama.Client(host="http://localhost:11434")
 model_ready = False
 model_failed = False
 
-rename_only = False
-organize_only = False
-rename_and_organize = False
 
 def initialize_model():
+  start = time.time()
   global model_ready,model_failed
   local_model = "gemma3:4b"
 
   try:
     model_info = local_client.show(model=local_model)
     model_ready = True
+    end = time.time()
     print("\n[Butler AI] Ollama model initialized successfully...")
+    print(f"\n[Butler AI Time Stats] Time taken to initialize model: {end-start:.2f} seconds")
   except Exception as e:
+    end = time.time()
     print(f"\n[Butler AI] Failed to initialize model : {e}")
+    print(f"\n[Butler AI Time Stats] Time taken to initialize model: {end-start:.2f} seconds")
     model_failed = True
 
 def isQuit(user_input):
@@ -35,21 +42,39 @@ def isQuit(user_input):
     return True
   return False
 
-def display_available_modes():
-  print("\n\tSelect one of the options in which you want your directory to be organized:\t\n")
-  print("1. Rename each file (Type 1).")
-  print("2. Organize files into folders (Type 2).")
-  print("3. Rename files and organize into folders (Type 3).")
+def get_mode():
+  ''' User enters a mode '''
+  while True:
+    print("\n\tSelect the mode in which you want your directory to be organized:\t\n")
+    print("1. Rename and Organize (Type 1).")
+    print("2. Organize by File Type (Type 2).")
+    print("3. Organize by Date (Type 3).")
+    
+    mode = int(input("Enter an option: "))
 
-def get_and_set_mode():
-  mode = int(input("Enter an option: "))
+    if (mode == 1):
+      print("[Butler AI] Mode of directory organization: Rename and Organize")
+      return mode
+    elif (mode == 2):
+      print("[Butler AI] Mode of directory organization: By File Type")
+      return mode
+    elif (mode == 3):
+      print("[Butler AI] Mode of directory organization: By Date")
+      return mode
+    else:
+      print("Enter a valid mode option.")
 
-  if (mode == 1):
-    rename_only = True
-  elif (mode == 2):
-    organize_only = True
-  else:
-    rename_and_organize = True
+def interpret_response(text):
+  '''Parse Yes/No response '''
+  while True:
+    response = input(text)
+    response = response.strip().lower()
+    if response in ('yes','y'):
+      return True
+    elif response in ('no','n'):
+      return False
+    else:
+      print("Enter either yes or no")
 
 def start():
   print("+======================================+")
@@ -78,58 +103,85 @@ def start():
         print("\n[Butler AI] Critical Error: Model initialization failed. Exiting...")
         sys.exit(1)
   
-  # Getting directory path
-  directory_path = input("Enter the path of the directory to organize: ")
+  while True:
+    # Getting directory path
+    directory_path = input("Enter the path of the directory to organize: ")
 
-  # Checking the existence of the given directory
-  while (not os.path.isdir(directory_path)):
-    print(f"The directory {directory_path} doesn't exist. Enter a valid directory path")
-    directory_path = input("Enter a valid path of the directory to organzie: ")
+    # Checking the existence of the given directory
+    while (not os.path.isdir(directory_path)):
+      print(f"The directory {directory_path} doesn't exist. Enter a valid directory path")
+      directory_path = input("Enter a valid path of the directory to organzie: ")
   
-  # Excluding hidden files from the directory list
+    # Excluding hidden files from the directory list
 
-  ''' Note: The below function, excludes the hidden file as per UNIX file naming convention that is file names
-  which start with "."
-  '''
+    ''' Note: The below function, excludes the hidden file as per UNIX file naming convention that is file names
+    which start with "."
+    '''
 
-  visible_files = exclude_hidden_files(directory_path)
+    visible_files = exclude_hidden_files(directory_path)
 
-  # Listing the files in the directory
-  print("\n")
-  print("+===========================================+")
-  print("|  The files present in the directory are   |")
-  print("+===========================================+")
-  print("\n")
+    # Listing the files in the directory
+    print("\n")
+    print("+===========================================+")
+    print("|  The files present in the directory are   |")
+    print("+===========================================+")
+    print("\n")
   
-  print(os.path.abspath(directory_path))
-  display_directory_tree(directory_path)
+    print(os.path.abspath(directory_path))
+    display_directory_tree(directory_path)
 
-  '''
-  User has three options
-  1. To rename the files
-  2. To only organize into folders
-  3. To rename and organize
+    '''
+    User has three options
+    
+    1. Smart rename and organize
+    2. Organize by file type
+    3. Organize by date
   
-  '''
+    '''
+    while True:
+      mode = get_mode()
 
-  display_available_modes()
-  get_and_set_mode()
+      if (mode == 1): # Rename and Organize
+        if not model_ready:
+          print("[Butler AI] Models not initialized, initializing it...")
+          initialize_model()
   
-  # Separating files by types (video, audio, image, text)
-  video_files, audio_files, image_files, text_files = separate_files_by_type(visible_files)
+        # Separating files by types (video, audio, image, text)
+        video_files, audio_files, image_files, text_files = separate_files_by_type(visible_files)
+    
+        # Processing text files
+        start = time.time()
+        text_files_content = process_text_files(text_files,workers=4)
+        end = time.time()
+    
+        print("[Butler AI] Text file content are extracted and ready to be fed to the model")
+        print(f"[Butler AI Time Stats] Time Taken to read and extract file contents: {end-start:.2f} seconds")
+    
+        # Feeding the extracted content into the AI model and get appropriate file names and folder name
+        start = time.time()
+        text_files_data = feed_text_files_data(text_files_content,local_client)
+        end = time.time()
 
-  # print("\nFiles sorted by types:\n")
-  # print(f"Text Files: {text_files}\n")
-  # print(f"Image Files: {image_files}\n")
-  # print(f"Video Files: {video_files}\n")
-  # print(f"Audio Files: {audio_files}\n")
+        print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
+      
+      # Ask user if performed changes are as expected
+      accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")
 
-  # Processing text files
-
-  text_content = process_text_files(text_files,workers=4)
-
-  # for f,snippet in text_content.items():
-  #   print(f"\n--- {f} ---\n{snippet[:200]}...")
+      if accept_changes:
+        break # Exit mode loop
+      else:
+        # Ask user if the directory has to be reorganized
+        reorganize = interpret_response("Do you want to reorganize the directory better? (Yes/No):  ")
+        if reorganize:
+          continue # Again ask the choice of organization
+        else:
+          print("[Butler AI] User not satisfied with organization..terminating application..")
+          break # Exit mode loop
+    
+    # Ask user if another directory has to be organized
+    dir_path = interpret_response("Do you want to organize another directory (Yes/No): ")
+    if not dir_path:
+      break # Exit main loop
 
 
 if __name__ == "__main__":
