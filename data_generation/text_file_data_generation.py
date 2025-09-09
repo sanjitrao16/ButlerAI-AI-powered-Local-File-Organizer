@@ -32,7 +32,7 @@ def generate_file_description(text,local_client):
 
   return description
 
-def generate_file_name(file,file_description,local_client):
+def generate_text_file_name(file,file_description,local_client):
   file_name_prompt = f'''You are tasked to provide a short and clear file name based on the file description provided, use plain
   english and the file name should capture the file's essence and clearly convey the topic it contains. Avoid special characters, limit
   the filename to a maximum of 3 words, connect words with underscores and do not include file extensions.
@@ -71,14 +71,13 @@ def generate_file_name(file,file_description,local_client):
 
   return filename
 
-def generate_file_attributes(file,text,local_client):
-  ''' Generating file attributes like file name, file description and folder name'''
+def generate_text_file_attributes(file,text,local_client):
+  ''' Generating file attributes like file name and file description'''
 
   ''' The file attributes generation is done as follows:
   
   1. A short 100 word file description is given from the extracted file content
   2. From the generated description, a file name is suggested (maximum of 3 words).
-  3. Further a folder name is suggested from the suggested file name (maximum 2 words).
   
   '''
 
@@ -86,7 +85,15 @@ def generate_file_attributes(file,text,local_client):
   description = generate_file_description(text,local_client)
 
   # Generating file name
-  file_name = generate_file_name(file,description,local_client)
+  file_name = generate_text_file_name(file,description,local_client)
+
+  generated_attributes = {
+    "original_file_name": file,
+    "generated_description": description,
+    "generated_file_name": file_name
+  }
+
+  return generated_attributes
 
 
 
@@ -95,4 +102,6 @@ def feed_text_files_data(text_files,local_client):
   # Feeding data sequentially
   results = []
   for text_file,content in text_files.items():
-    data = generate_file_attributes(text_file,content,local_client)
+    data = generate_text_file_attributes(text_file,content,local_client)
+    results.append(data)
+  return results

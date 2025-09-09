@@ -6,3 +6,4 @@ PyMuPDF
 ollama
 scikit-learn
 pytesseract
+pillow

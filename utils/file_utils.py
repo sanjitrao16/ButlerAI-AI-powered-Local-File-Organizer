@@ -67,7 +67,7 @@ def exclude_hidden_files(dir_path):
     files = []
     for file in os.listdir(dir_path):
         if (os.path.isfile(os.path.join(dir_path,file)) and (not file.startswith("."))):
-            files.append(os.path.join(dir_path,file))
+            files.append(os.path.abspath(os.path.join(dir_path,file)))
     return files
 
 def process_text_files(text_files,workers=4):

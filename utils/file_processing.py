@@ -28,7 +28,7 @@ def process_ppt_file(file_path):
     ''' Processing presentation files like .ppt and .pptx using the python-pptx library '''
     try:
         ppt_file = Presentation(file_path)
-        full_text = []
+        full_text = ["Document Context: The following document content is a presentation."]
         for slide in ppt_file.slides:
             for shape in slide.shapes:
                 if hasattr(shape,"text"):

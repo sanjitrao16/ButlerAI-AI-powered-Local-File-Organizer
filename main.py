@@ -14,6 +14,10 @@ from data_generation.text_file_data_generation import (
   feed_text_files_data
 )
 
+from data_generation.image_file_data_generation import (
+  categorize_image_files
+)
+
 local_client = ollama.Client(host="http://localhost:11434")
 model_ready = False
 model_failed = False
@@ -33,7 +37,6 @@ def initialize_model():
   except Exception as e:
     end = time.time()
     print(f"\n[Butler AI] Failed to initialize model : {e}")
-    print(f"\n[Butler AI Time Stats] Time taken to initialize model: {end-start:.2f} seconds")
     model_failed = True
 
 def isQuit(user_input):
@@ -157,12 +160,21 @@ def start():
         print("[Butler AI] Text file content are extracted and ready to be fed to the model")
         print(f"[Butler AI Time Stats] Time Taken to read and extract file contents: {end-start:.2f} seconds")
     
-        # Feeding the extracted content into the AI model and get appropriate file names and folder name
+        # Feeding the extracted content into the Gemma3:4b model and get appropriate file descriptions and file name.
         start = time.time()
         text_files_data = feed_text_files_data(text_files_content,local_client)
         end = time.time()
 
         print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
+
+        # Feeding image files into the Gemma3:4b model to get appropriate image captions and file names
+        start = time.time()
+        image_files_data = categorize_image_files(image_files)
+        end = time.time()
+
+        print("[Butler AI] Categorized image files into relevant categories")
+        print(f"[Butler AI Time Stats] Total Time Taken to categorize image files: {end-start:.2f} seconds")
+
       
       # Ask user if performed changes are as expected
       accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")
