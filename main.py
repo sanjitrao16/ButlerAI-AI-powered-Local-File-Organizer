@@ -14,7 +14,7 @@ from data_generation.text_file_data_generation import (
   feed_text_files_data
 )
 
-from data_generation.image_file_data_generation import (
+from image_file_categorization import (
   categorize_image_files
 )
 

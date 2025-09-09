@@ -1,8 +1,3 @@
-import os
-import shutil
-import time
-import ollama
-import re
 import pytesseract
 from PIL import Image, ExifTags
 import concurrent.futures
