@@ -172,7 +172,7 @@ def start():
         print("[Butler AI] Generated text file attributes")
         print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
 
-        # Feeding image files into the Gemma3:4b model to get appropriate image captions and file names
+        # Categorizing image files on how text-heavy it is
         start = time.time()
         image_files_category = categorize_image_files(image_files)
         end = time.time()
@@ -180,12 +180,14 @@ def start():
         print("[Butler AI] Categorized image files into relevant categories")
         print(f"[Butler AI Time Stats] Total Time Taken to categorize image files: {end-start:.2f} seconds")
 
+        # Feeding the categorized image files into the Gemma3:4b model to get appropriate image captions and file names
         start = time.time()
         image_files_data = feed_image_files_data(image_files_category,local_client)
         end = time.time()
 
         print("[Butler AI] Generated image file attributes")
         print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
+
       
 
       # Ask user if performed changes are as expected
