@@ -7,7 +7,8 @@ from utils.file_utils import (
   display_directory_tree,
   exclude_hidden_files,
   separate_files_by_type,
-  process_text_files
+  process_text_files,
+  display_suggested_dir_tree
 )
 
 from data_generation.text_file_data_generation import (
@@ -200,11 +201,18 @@ def start():
         for image_file in image_files_data:
           file_names.append([image_file["generated_file_name"],image_file["original_file_name"]])
         
-        print(file_names)
-
+        # Generating directory structure along with folder names as JSON
         folder_object = generate_folder_json(file_names,local_client)
-        print(type(folder_object))
-        
+
+        print("\n")
+        print("+==================================+")
+        print("|  Suggested Directory Structure   |")
+        print("+==================================+")
+        print("\n")
+
+        # Suggested Directory Structure
+        print(os.path.abspath(directory_path))
+        display_suggested_dir_tree(directory_path,folder_object)
 
       # Ask user if performed changes are as expected
       accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")

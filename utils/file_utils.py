@@ -77,3 +77,45 @@ def process_text_files(text_files,workers=4):
         for file_path,content in executor.map(extract_text_content,text_files):
             results[file_path] = content
     return results
+
+def display_suggested_dir_tree(existing_path,json_data):
+    display_existing(existing_path)
+    display_json(json_data)
+
+def display_existing(path):
+    if not os.path.exists(path):
+        print(f"[Butler AI] The directory {path} does not exist.")
+        return
+    
+    is_root = True
+    
+    for root,dirs,files in os.walk(path):
+        if is_root:
+            is_root = False
+            for d in dirs:
+                print(f"├── .{d}/")
+            continue
+
+        level = root.replace(path,'').count(os.sep)
+        indent = '│   ' * (level - 1)
+        for file in files:
+            print(f"{indent}│   └── {file}")
+
+def display_json(data,prefix=""):
+    if "folders" in data and isinstance(data["folders"], list):
+        folders = data["folders"]
+        pointers = ['├── '] * (len(folders) - 1) + ['└── ']
+        for i,folder in enumerate(folders):
+            pointer = pointers[i]
+            folder_name = folder.get("folder_name","Unknown Folder").strip()
+            print(prefix+pointer+"."+folder_name,"/")
+
+            files = folder.get("files",[])
+            if files:
+                extension = "|   " if pointer == "├── " else "    "
+                file_pointers = ["├── "] * (len(files) - 1) + ["└── "]
+                for j, file in enumerate(files):
+                    file_pointer = file_pointers[j]
+                    file_name = file.get("generated_name", "Unknown File")
+                    print(prefix + extension + file_pointer + file_name)
+        
