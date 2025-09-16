@@ -22,6 +22,10 @@ from data_generation.image_file_data_generation import (
   feed_image_files_data
 )
 
+from utils.folder_generation import (
+  generate_folder_json
+)
+
 local_client = ollama.Client(host="http://localhost:11434")
 model_ready = False
 model_failed = False
@@ -187,8 +191,20 @@ def start():
 
         print("[Butler AI] Generated image file attributes")
         print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
+        print()
 
-      
+        # Storing the generated file names in a list
+        file_names = []
+        for text_file in text_files_data:
+          file_names.append([text_file["generated_file_name"],text_file["original_file_name"]])
+        for image_file in image_files_data:
+          file_names.append([image_file["generated_file_name"],image_file["original_file_name"]])
+        
+        print(file_names)
+
+        folder_object = generate_folder_json(file_names,local_client)
+        print(type(folder_object))
+        
 
       # Ask user if performed changes are as expected
       accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")

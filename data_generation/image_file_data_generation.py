@@ -4,43 +4,43 @@ import time
 import ollama
 import re
 
-def generate_foldername_ocr(filename,local_client):
-  foldername_prompt = f'''You are tasked to generate a general category or theme that best represents the main subject of the image based on the file name provided. The generated category name will be used as a folder name. Since it is being used a folder name, suggest names which serves as a more general categorization of the file which can also further be used for other related files. Limit the category name to a maximum of 2 words. Use nouns and avoid verbs. Do not include specific details, words from the filename or any generic terms.
+# def generate_foldername_ocr(filename,local_client):
+#   foldername_prompt = f'''You are tasked to generate a general category or theme that best represents the main subject of the image based on the file name provided. The generated category name will be used as a folder name. Provide a very general category name. Limit the category name to a maximum of 2 words. Use nouns and avoid verbs. Do not include specific details, words from the filename or any generic terms.
   
-  The first letter of the word should be capitalized and use underscores to group words.
+#   The first letter of the word should be capitalized and use underscores to group words.
 
-  File Name: {filename}
+#   File Name: {filename}
 
-  Examples:
+#   Examples:
   
-  1. Image Caption: A scanned document of an electricity bill
-     Category name: Electricity_Bills
+#   1. Image Caption: A scanned document of an electricity bill
+#      Category name: Electricity_Bills
 
-  2. Image Caption: A screenshot of a Machine Learning course certificate
-     Category name: Certificates
+#   2. Image Caption: A screenshot of a Machine Learning course certificate
+#      Category name: Certificates
   
-  Output only the category and nothing else.
+#   Output only the category and nothing else.
 
-  Category:'''
+#   Category:'''
 
-  start = time.time()
-  response = local_client.chat(
-    model= "gemma3:4b",
-    messages= [
-      {"role": "user","content": foldername_prompt}
-    ]
-  )
+#   start = time.time()
+#   response = local_client.chat(
+#     model= "gemma3:4b",
+#     messages= [
+#       {"role": "user","content": foldername_prompt}
+#     ]
+#   )
 
-  end = time.time()
-  foldername = response['message']['content'].strip()
-  print()
-  print("---------------------------------")
-  print(f"Suggested Folder Name: {foldername}")
-  print("---------------------------------")
-  print()
-  print(f"[Butler AI Time Stats] Time taken to generate folder name: {end-start:.2f} seconds")
+#   end = time.time()
+#   foldername = response['message']['content'].strip()
+#   print()
+#   print("---------------------------------")
+#   print(f"Suggested Folder Name: {foldername}")
+#   print("---------------------------------")
+#   print()
+#   print(f"[Butler AI Time Stats] Time taken to generate folder name: {end-start:.2f} seconds")
 
-  return foldername
+#   return foldername
 
 def generate_image_filename_ocr(file,text,local_client):
   ''' Generating image file filename based on the extracted OCR text '''
@@ -70,13 +70,13 @@ def generate_image_filename_ocr(file,text,local_client):
   print()
   print(f"[Butler AI Time Stats] Time taken to generate file name: {end-start:.2f} seconds")
 
-  foldername = generate_foldername_ocr(filename,local_client)
+  # foldername = generate_foldername_ocr(filename,local_client)
 
   generated_attributes = {
     "original_file_name": file,
     "generated_description": text,
     "generated_file_name": filename,
-    "generated_folder_name": foldername
+    # "generated_folder_name": foldername
   }
 
   return generated_attributes
@@ -144,46 +144,46 @@ def generate_file_name(file,caption,local_client):
   
   return filename
 
-def generate_folder_name(filename,local_client):
-  foldername_prompt = f'''You are tasked to generate a general and generic category name or theme that best represents the main subject of the image based on the file name provided. This is will be used as a folder name. Since it is being used a folder name, suggest names which serves as a more general categorization of the file which can also further be used for other related files. Limit the category name to a maximum of 2 words. Use nouns and avoid verbs. Do not include specific details, words from the filename or any generic terms.
+# def generate_folder_name(filename,local_client):
+#   foldername_prompt = f'''You are tasked to generate a general and generic category name or theme that best represents the main subject of the image based on the file name provided. This is will be used as a folder name. Provide a very general category name. Limit the category name to a maximum of 2 words. Use nouns and avoid verbs. Do not include specific details, words from the filename or any generic terms.
   
-  The first letter of the word should be capitalized and use underscores to group words.
+#   The first letter of the word should be capitalized and use underscores to group words.
 
-  File Name: {filename}
+#   File Name: {filename}
 
-  Examples:
+#   Examples:
   
-  1. Image Caption: A scenic place with a mountain and lake in the foreground.
-     Category name: Nature
+#   1. Image Caption: A scenic place with a mountain and lake in the foreground.
+#      Category name: Nature
 
-  2. Image Caption: A group of people posing near the Eiffel Tower.
-     Category name: Paris_Trip
+#   2. Image Caption: A group of people posing near the Eiffel Tower.
+#      Category name: Paris_Trip_2021
   
-  3. Image Caption: A family celebrating their child's birthday.
-     Category name: Birthday_Photos
+#   3. Image Caption: A family celebrating their child's birthday.
+#      Category name: Birthday_2023
   
-  Output only the category and nothing else.
+#   Output only the category and nothing else.
 
-  Category:'''
+#   Category:'''
 
-  start = time.time()
-  response = local_client.chat(
-    model= "gemma3:4b",
-    messages= [
-      {"role": "user","content": foldername_prompt}
-    ]
-  )
+#   start = time.time()
+#   response = local_client.chat(
+#     model= "gemma3:4b",
+#     messages= [
+#       {"role": "user","content": foldername_prompt}
+#     ]
+#   )
 
-  end = time.time()
-  foldername = response['message']['content'].strip()
-  print()
-  print("---------------------------------")
-  print(f"Suggested Folder Name: {foldername}")
-  print("---------------------------------")
-  print()
-  print(f"[Butler AI Time Stats] Time taken to generate folder name: {end-start:.2f} seconds")
+#   end = time.time()
+#   foldername = response['message']['content'].strip()
+#   print()
+#   print("---------------------------------")
+#   print(f"Suggested Folder Name: {foldername}")
+#   print("---------------------------------")
+#   print()
+#   print(f"[Butler AI Time Stats] Time taken to generate folder name: {end-start:.2f} seconds")
 
-  return foldername
+#   return foldername
 
 def generate_image_attributes(file,local_client):
   ''' Generating image file attributes like image caption, filename based on the input image file '''
@@ -202,13 +202,13 @@ def generate_image_attributes(file,local_client):
   filename = generate_file_name(file,caption,local_client)
 
   # Generating folder name
-  folder_name = generate_folder_name(filename,local_client)
+  # folder_name = generate_folder_name(filename,local_client)
 
   generated_attributes = {
     "original_file_name": file,
     "generated_description": caption,
     "generated_file_name": filename,
-    "generated_folder_name": folder_name
+    # "generated_folder_name": folder_name
   }
 
   return generated_attributes
