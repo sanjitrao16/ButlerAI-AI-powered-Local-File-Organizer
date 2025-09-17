@@ -78,9 +78,33 @@ def process_text_files(text_files,workers=4):
             results[file_path] = content
     return results
 
-def display_suggested_dir_tree(existing_path,json_data):
+def display_suggested_dir_tree(existing_path,json_data,video_files,audio_files):
     display_existing(existing_path)
     display_json(json_data)
+    display_video_files(video_files)
+    display_audio_files(audio_files)
+
+def display_video_files(video_files,prefix=""):
+    ''' Folder name -> Videos/'''
+    if video_files == []:
+        return
+    print("└── Videos")
+    pointers = ["├── "] * (len(video_files) - 1) + ["└── "]
+    for j, file_path in enumerate(video_files):
+            file_name = os.path.basename(file_path)
+            file_pointer = pointers[j]
+            print(f"    {file_pointer}{file_name}")
+
+def display_audio_files(audio_files):
+    ''' Folder name -> Audios/ '''
+    if audio_files == []:
+        return
+    print("└── Audios")
+    pointers = ["├── "] * (len(audio_files) - 1) + ["└── "]
+    for j, file_path in enumerate(audio_files):
+            file_name = os.path.basename(file_path)
+            file_pointer = pointers[j]
+            print(f"    {file_pointer}{file_name}")
 
 def display_existing(path):
     if not os.path.exists(path):
@@ -108,7 +132,7 @@ def display_json(data,prefix=""):
         for i,folder in enumerate(folders):
             pointer = pointers[i]
             folder_name = folder.get("folder_name","Unknown Folder").strip()
-            print(prefix+pointer+"."+folder_name,"/")
+            print(prefix+pointer+"."+folder_name+"/")
 
             files = folder.get("files",[])
             if files:

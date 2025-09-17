@@ -18,7 +18,7 @@ def generate_folder_json(filenames,local_client):
     - A **folder name** that is short, descriptive, and meaningful.
     - A list of **files**, where each file entry contains:
      - `"generated_name"` → the AI-generated filename
-     - `"original_name"` → the original filename
+     - `"original_name"` → the original filename, it should be as is it is there in the list
 
   File Names List (Generated Name, Original Name): {filenames}
 

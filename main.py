@@ -23,8 +23,12 @@ from data_generation.image_file_data_generation import (
   feed_image_files_data
 )
 
-from utils.folder_generation import (
+from data_generation.folder_generation import (
   generate_folder_json
+)
+
+from organization import (
+  organize_directory
 )
 
 local_client = ollama.Client(host="http://localhost:11434")
@@ -58,14 +62,14 @@ def get_mode():
   ''' User enters a mode '''
   while True:
     print("\n\tSelect the mode in which you want your directory to be organized:\t\n")
-    print("1. Rename and Organize (Type 1).")
+    print("1. Rename and Organize by Content (Type 1).")
     print("2. Organize by File Type (Type 2).")
     print("3. Organize by Date (Type 3).")
     
     mode = int(input("Enter an option: "))
 
     if (mode == 1):
-      print("[Butler AI] Mode of directory organization: Rename and Organize")
+      print("[Butler AI] Mode of directory organization: Rename and Organize by Content")
       return mode
     elif (mode == 2):
       print("[Butler AI] Mode of directory organization: By File Type")
@@ -145,7 +149,7 @@ def start():
     '''
     User has three options
     
-    1. Smart rename and organize
+    1. Rename and Organize by Content
     2. Organize by file type
     3. Organize by date
   
@@ -201,7 +205,7 @@ def start():
         for image_file in image_files_data:
           file_names.append([image_file["generated_file_name"],image_file["original_file_name"]])
         
-        # Generating directory structure along with folder names as JSON
+        # Generating folder names and returning as JSON
         folder_object = generate_folder_json(file_names,local_client)
 
         print("\n")
@@ -212,12 +216,18 @@ def start():
 
         # Suggested Directory Structure
         print(os.path.abspath(directory_path))
-        display_suggested_dir_tree(directory_path,folder_object)
+        display_suggested_dir_tree(directory_path,folder_object,video_files,audio_files)
 
       # Ask user if performed changes are as expected
       accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")
 
       if accept_changes:
+        print("[Butler AI] User has accepted changes...Proceeding to apply..")
+
+        organize_directory(
+          directory_path,folder_object,video_files,audio_files
+        )
+
         break # Exit mode loop
       else:
         # Ask user if the directory has to be reorganized
