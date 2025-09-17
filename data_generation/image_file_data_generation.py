@@ -1,8 +1,6 @@
 import os
-import shutil
 import time
 import ollama
-import re
 
 def generate_image_filename_ocr(file,text,local_client):
   ''' Generating image file filename based on the extracted OCR text '''
@@ -45,7 +43,10 @@ def generate_image_caption(file,local_client):
 
   caption_prompt = f'''You are tasked to provide a concise and clear caption based on the given input image file path. The caption should catch the overall essence and meaning of the image, focus on the main objects and important aspects of the picture and ignore the subtle and minute details present. The caption should a maximum of 100 words and use plain english.
   
-  Do not invent new details which are not present in the image and output only the image caption nothing else.
+  Do not invent new details which are not present in the image.
+  Do not generate captions based on the file name present in the file path
+  Analyse the image thoroughly and it doesn't matter if it takes time.
+  Output only the image caption nothing else.
   
   Image File Path: {file}
   

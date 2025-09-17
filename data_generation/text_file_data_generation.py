@@ -1,9 +1,6 @@
 import os
-import shutil
 import time
 import ollama
-import re
-from pathlib import Path
 
 def generate_file_description(text,local_client):
   file_desc_prompt = f'''You are tasked to provide a clear and concise description of the file's content, use plain

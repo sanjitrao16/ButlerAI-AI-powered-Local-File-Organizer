@@ -1,7 +1,4 @@
 import os
-import shutil
-import sys
-import re
 import concurrent.futures
 
 from .file_processing import (
@@ -79,12 +76,13 @@ def process_text_files(text_files,workers=4):
     return results
 
 def display_suggested_dir_tree(existing_path,json_data,video_files,audio_files):
-    display_existing(existing_path)
-    display_json(json_data)
+    ''' Calling four functions to print the overall suggested directory tree '''
     display_video_files(video_files)
     display_audio_files(audio_files)
+    display_existing(existing_path)
+    display_json(json_data)
 
-def display_video_files(video_files,prefix=""):
+def display_video_files(video_files):
     ''' Folder name -> Videos/'''
     if video_files == []:
         return
@@ -107,6 +105,7 @@ def display_audio_files(audio_files):
             print(f"    {file_pointer}{file_name}")
 
 def display_existing(path):
+    ''' Displaying the existing unchanged sub-folders as it is '''
     if not os.path.exists(path):
         print(f"[Butler AI] The directory {path} does not exist.")
         return
@@ -126,15 +125,16 @@ def display_existing(path):
             print(f"{indent}│   └── {file}")
 
 def display_json(data,prefix=""):
+    ''' Displaying the JSON data in directory tree format '''
     if "folders" in data and isinstance(data["folders"], list):
         folders = data["folders"]
         pointers = ['├── '] * (len(folders) - 1) + ['└── ']
-        for i,folder in enumerate(folders):
+        for i,folder in enumerate(folders): # Iterating over each of the suggested folder
             pointer = pointers[i]
             folder_name = folder.get("folder_name","Unknown Folder").strip()
             print(prefix+pointer+"."+folder_name+"/")
 
-            files = folder.get("files",[])
+            files = folder.get("files",[]) # Getting individual files
             if files:
                 extension = "|   " if pointer == "├── " else "    "
                 file_pointers = ["├── "] * (len(files) - 1) + ["└── "]

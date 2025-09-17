@@ -198,7 +198,7 @@ def start():
         print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
         print()
 
-        # Storing the generated file names in a list
+        # Storing the generated file names in a list (convert to JSON)
         file_names = []
         for text_file in text_files_data:
           file_names.append([text_file["generated_file_name"],text_file["original_file_name"]])
@@ -224,6 +224,7 @@ def start():
       if accept_changes:
         print("[Butler AI] User has accepted changes...Proceeding to apply..")
 
+        # Organizing the directory
         organize_directory(
           directory_path,folder_object,video_files,audio_files
         )
@@ -235,7 +236,7 @@ def start():
         if reorganize:
           continue # Again ask the choice of organization
         else:
-          print("[Butler AI] User not satisfied with organization..terminating application..")
+          print("[Butler AI] User not satisfied with organization.")
           break # Exit mode loop
     
     # Ask user if another directory has to be organized

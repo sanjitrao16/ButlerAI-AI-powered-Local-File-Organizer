@@ -1,9 +1,8 @@
 import os
-import shutil
-import time
 from pathlib import Path
 
 def rename_files(path,folder_obj):
+  # Renaming files based on the data present in the JSON object
   folders = folder_obj["folders"]
   for folder in folders:
     files = folder["files"] # Accessing the files in the suggested folder name
@@ -20,10 +19,12 @@ def rename_files(path,folder_obj):
       try:
         os.rename(original_name,new_file_path)
         # Updating file location
-        file["renamed_file"] = new_file_path
+        file["renamed_file_path"] = new_file_path
       except FileNotFoundError:
         print(f"[Butler AI] File {original_name} not found.")
       except FileExistsError:
         print(f"[Butler AI] File with the name {renamed_file_name} already exists.")
       except Exception as e:
         print(f"[Butler AI] Error occurred, {e}")
+      
+  return folder_obj # Updated folder object
