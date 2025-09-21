@@ -44,3 +44,85 @@ generally is the case, considering either files can have a large amount of data 
 computational power and resource constraints. However, with a better infrastructure the same application can be developed using even more powerful models.
 
 Link to the model: [`gemma3:4b`](https://ollama.com/library/gemma3)
+
+## System Requirements
+### Hardware Requirements:
+- Operating System: Currently the application is compatible with Windows.
+- CPU: Intel i5 or AMD Ryzen 5 series onwards.
+- RAM: 16GB minimum, recommended 32GB.
+- GPU:
+  CUDA support required for GPU acceleration. 4GB VRAM minimum required.
+
+### Software Requirements
+- Python version: 3.10+.
+- Ollama local model server with Gemma3:4b model downloaded and ready.
+- Tesseract OCR Engine required for extracting text from images.
+- Git for cloning the repository.
+
+## Supported File Types
+The application supports a variety of file types from text based to image based files. A detailed list is given below:
+1. Text Files: `.txt`, `.md`, `.docx`, `.doc`
+2. Presentations: `.pptx`, `.ppt`
+3. Spreadsheets: `.csv`, `.xlsx`, `.xls`
+4. PDFs: `.pdf`
+5. Image Files: `.jpeg`, `.jpg`, `.png`, `.webp`, `.gif`
+
+The application also identifies other file types like video files (e.g: `.mp4`) and audio files (e.g: `.mp3`), however, it doesn't analyze the files and its content instead it categorizes such files into generic folders like `Videos` and `Audios` respectively.
+
+# Future Improvements
+1. Create a full application with an UI for better accessibility.
+2. Implementation of log files to store application related info/logs.
+3. Further expansion by analysizing other file types or carry out efficient and better strategies to categorize additional file types.
+4. Caching data to avoid frequent model requests and save time and resource.
+5. Suggesting multiple file directory structures instead of just one.
+6. Alternative approach for folder generation, other than JSON based.
+
+# Guide on installing and running the application
+### Pre-requisties
+Before diving into the installation guide, please make sure you satisfy the above hardware and software requirements mentioned above. It is necessary for the Tesseract OCR Engine to be installed for carrying out OCR based operations. Download links:
+1. [Python](https://www.python.org/downloads/)
+2. [Ollama](https://ollama.com/download/windows) 
+3. [Tesseract OCR Engine (Windows)](https://github.com/UB-Mannheim/tesseract/wiki)
+4. [Gemma3:4b Model](https://ollama.com/library/gemma3)
+
+### Guide
+
+#### 1. Clone the repository
+Clone the repository to your local machine using Git.
+
+```
+git clone https://github.com/sanjitrao16/ButlerAI-AI-powered-Local-File-Organizer
+```
+
+or download the repository as ZIP file and extract the contents.
+
+#### 2. Create a virtual environment
+
+- Open the folder in any code editor, and create a virtual environment with Python 3.12 from the terminal.
+
+```python
+python -m venv butlerai python=3.12
+```
+
+- Activate the environment
+
+```python
+butlerai/Scripts/activate
+```
+
+#### 3. Install dependancies
+
+In the root of the directory, install the requried dependancies
+
+```python
+pip install -r requirements.txt
+```
+
+#### 4. Run the Ollama model
+Before running the application, make sure the ollama model is set-up and running in the background.
+
+#### 5. Run the application
+
+```python
+python main.py
+```
