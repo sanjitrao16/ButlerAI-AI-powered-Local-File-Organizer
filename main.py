@@ -150,11 +150,9 @@ def start():
     visible_files = exclude_hidden_files(abs_path,directory_path)
 
     # Listing the files in the directory
-    print("\n")
-    print("+===========================================+")
+    print("\n+===========================================+")
     print("|  The files present in the directory are   |")
-    print("+===========================================+")
-    print("\n")
+    print("+===========================================+\n")
   
     print(abs_path)
     display_directory_tree(directory_path)
@@ -217,11 +215,9 @@ def start():
         # Generating folder names and returning as JSON
         folder_object = generate_folder_json(app_dir,file_obj,local_client)
 
-        print("\n")
-        print("+==================================+")
+        print("\n+==================================+")
         print("|  Suggested Directory Structure   |")
-        print("+==================================+")
-        print("\n")
+        print("+==================================+\n")
 
         # Suggested Directory Structure
         print(abs_path)

@@ -4,6 +4,5 @@ python-pptx
 openpyxl
 PyMuPDF
 ollama
-scikit-learn
 pytesseract
 pillow
