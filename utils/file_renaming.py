@@ -5,10 +5,10 @@ def rename_files(path,folder_obj):
   # Renaming files based on the data present in the JSON object
   folders = folder_obj["folders"]
   for folder in folders:
-    files = folder["files"] # Accessing the files in the suggested folder name
+    files = folder["files"]
     for file in files:
-      generated_name = file["generated_name"]
-      original_name = file["original_name"]
+      generated_name = file["generated_file_name"]
+      original_name = file["original_file_name"]
       path_object = Path(original_name)
       file_ext = path_object.suffix # Getting the file extension
 

@@ -3,29 +3,37 @@ import time
 import os
 import json
 
-def generate_folder_json(filenames,local_client):
+from utils.json_parsing import (
+  cleaned_json_output,
+  parse_json_output
+)
+
+def generate_folder_json(app_dir,filenames,local_client):
   ''' Folder generation prompt where the output is in raw JSON format '''
-  foldername_prompt = f'''You are an intelligent file organizer. You will be given a list of generated file names and their corresponding original file names. Your task is to group these files into meaningful and logical folders based on their content, context, or similarities.
 
-  Instructions:
-  1. Analyze the provided file names carefully.
-  2. Group files into AS FEW FOLDERS as possible, while ensuring each folder is semantically consistent.
-  3. Limit the folder name to a MAXIMUM OF 2 words and use nouns and avoid verbs.
-  4. Do not include specific details, words from the filename or any generic terms.
-  5. The first letter of the word should be capitalized and use underscores to group words.
-  6. Output must strictly be in **valid JSON format only**, no explanations or text outside JSON.
-  7. Each folder must have:
-    - A **folder name** that is short, descriptive, and meaningful.
-    - A list of **files**, where each file entry contains:
-     - `"generated_name"` → the AI-generated filename
-     - `"original_name"` → the original filename
+  foldername_prompt = f'''You are an intelligent file organizer. INPUT is a JSON object, which has one key **files** and whose value is a list, where each element is an object representing the file, the structure of the object is given below:
+  - `"original_file_name"`: The original name and path of the file (do not change or modify).
+  - `"generated_file_name"`: The AI-suggested file name (do not change).
+  - `"id"`: File ID (do not change).
 
-  File Names List (Generated Name, Original Name): {filenames}
+  TASK:
+  Your task is to group these files into meaningful and logically named folders by analysing similarites, patterns and meaning based on the "generated_file_name" key. Limit the folder name to a maximum of 2 words, underscore separated, no punctuation, use nouns and avoid verbs. Group files into **as few folders** as possible and also retaining the semantic meaning of the folders.
 
-  1. The original file name shouldn't change and should remain the same even in the output.
-  2. The output should include all the list elements which are present in the above given list.
-
-  Output only the JSON Format without any additional text.
+  OUTPUT RULES (must be followed exactly):
+  1. Return **only** a single valid JSON object as the output and no additional text or explanations.
+  3. Do not include specific details, words from the filename or any generic terms.
+  4. The first letter of the word should be capitalized and use underscores to group words.
+  5. Output must strictly be in **valid JSON format only**, no explanations or text outside JSON.
+  6. The JSON object has one key: **folders**, the value is a list(array) of folders where each element represents one folder.
+  7. Each element of the **folders** is an object having two keys:
+     - **folder_name** → A string, the name of the folder generated.
+     - **files** → a list(array) of files that belong to the folder.
+  8. Each element of the **files** array is an object having three keys:
+     - **original_file_name** → A string, the original name and path of the file. The value should be exactly as it is given in the input, without modifications.
+     - **generated_file_name** → A string, the generated name of the file. This name should be exactly as it is given in the input.
+     - **id** → An integer, the unique file id which should be exactly as it is given in the input.
+  
+  Input files: {filenames}
 
   JSON Output:'''
 
@@ -38,41 +46,18 @@ def generate_folder_json(filenames,local_client):
   )
   end = time.time()
 
-  print("JSON OUTPUT")
   json_output = response["message"]["content"].strip()
-  print(json_output)
 
-  print(f"[Butler AI Time Stats] Time taken to format the JSON Structure: {end-start:.2f} seconds")
-  print("[Butler AI] Files categorized and JSON output is given.")
+  print(f"[Butler AI Time Stats] Time taken to generate the folder structure: {end-start:.2f} seconds")
+  print("[Butler AI] File categorized and returned as a JSON object.")
 
-  cleaned_output = cleaned_json_output(json_output) # Cleaning the output
+  cleaned_output = cleaned_json_output(json_output) # cleaning the output
 
   parsed_response = parse_json_output(cleaned_output) # converting to JSON object
 
+  folder_fname = "folder_structure.json"
+
+  with open(os.path.join(app_dir,folder_fname),"w") as file:
+    json.dump(parsed_response,file,indent=4)
+
   return parsed_response
-
-def cleaned_json_output(json_output):
-  # Clean the response and get only the JSON File
-  try:
-    start_index = json_output.find("{")
-    end_index = json_output.rfind("}")+1
-    cleaned_output = json_output[start_index:end_index]
-  except Exception as e:
-    print(f"[Butler AI] Could not find a valid JSON string, Error: {e}")
-    cleaned_output = None
-  
-  return cleaned_output
-
-def parse_json_output(json_output):
-  # Converting the JSON string to JSON object
-  if json_output:
-    try:
-      json_object = json.loads(json_output)
-      print("[Butler AI] Successfully converted JSON Object.")
-    except json.JSONDecodeError as e:
-      print(f"[Butler AI] Failed to decode JSON, Error: {e}")
-      json_object = None
-    
-    return json_object
-  else:
-    print("[Butler AI] No JSON structure found.")

@@ -5,4 +5,5 @@ butlerai/
 __pycache__/
 *.pyc
 
+app_files/
 sample_folder/

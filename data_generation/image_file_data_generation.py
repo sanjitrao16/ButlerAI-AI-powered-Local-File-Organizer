@@ -5,7 +5,7 @@ import ollama
 def generate_image_filename_ocr(file,text,local_client):
   ''' Generating image file filename based on the extracted OCR text '''
 
-  file_name_prompt = f'''You are tasked to provide a clear file name based on text extracted from the image via pytesseract and OCR. Parts of text might not be readable, may not be structured, sentenced or grammatically correct, but catch the overall and genereal essence and meaning of the given text and output a file name in plain english. The file name should also convey what the image was intended to convey.Avoid special characters, limit the filename to a maximum of 3 words, connect words with underscores and do not include file extensions. Each word of the file name should have the starting letter capitalized.
+  file_name_prompt = f'''You are tasked to provide a clear file name based on text extracted from the image via pytesseract and OCR. Parts of text might not be readable, may not be structured, sentenced or grammatically correct, but catch the overall and genereal essence and meaning of the given text and output a file name in plain english. The file name should also convey what the image was intended to convey. Avoid special characters, limit the filename to a maximum of 3 words, connect words with underscores and do not include file extensions. Each word of the file name should have the starting letter capitalized.
 
   Output only the filename and nothing else.
   
@@ -38,7 +38,7 @@ def generate_image_filename_ocr(file,text,local_client):
 
   return generated_attributes
 
-def generate_image_caption(file,local_client):
+def generate_image_caption(file,text,local_client):
   ''' Generating image caption for the image '''
 
   caption_prompt = f'''You are tasked to provide a concise and clear caption based on the given input image file path. The caption should catch the overall essence and meaning of the image, focus on the main objects and important aspects of the picture and ignore the subtle and minute details present. The caption should a maximum of 100 words and use plain english.
@@ -47,8 +47,10 @@ def generate_image_caption(file,local_client):
   Do not generate captions based on the file name present in the file path
   Analyse the image thoroughly and it doesn't matter if it takes time.
   Output only the image caption nothing else.
-  
-  Image File Path: {file}
+
+  Optionally, these are some of the texts which were extracted from the image using OCR, which can be helpful for better understanding the whole context of the image
+
+  Text Extracted: {text}
   
   Caption:'''
 
@@ -56,7 +58,7 @@ def generate_image_caption(file,local_client):
   response = local_client.chat(
     model= "gemma3:4b",
     messages= [
-      {"role": "user","content": caption_prompt}
+      {"role": "user","content": caption_prompt,'images':[file]}
     ]
   )
 
@@ -104,7 +106,7 @@ def generate_file_name(file,caption,local_client):
   
   return filename
 
-def generate_image_attributes(file,local_client):
+def generate_image_attributes(file,text,local_client):
   ''' Generating image file attributes like image caption, filename based on the input image file '''
 
   ''' The file attributes generation is done as follows:
@@ -115,7 +117,7 @@ def generate_image_attributes(file,local_client):
   '''
 
   # Generating image caption
-  caption = generate_image_caption(file,local_client)
+  caption = generate_image_caption(file,text,local_client)
 
   # Generating file name
   filename = generate_file_name(file,caption,local_client)
@@ -138,7 +140,7 @@ def feed_image_files_data(image_files,local_client):
     if image_file["category"] == 1: # OCR extracted image file
       data = generate_image_filename_ocr(image_file["image_file_path"],image_file["ocr_text"],local_client)
     else: # Normal image directly given to AI Model
-      data = generate_image_attributes(image_file["image_file_path"],local_client)
+      data = generate_image_attributes(image_file["image_file_path"],image_file["ocr_text"],local_client)
     results.append(data)
   
   return results

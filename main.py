@@ -27,6 +27,10 @@ from data_generation.folder_generation import (
   generate_folder_json
 )
 
+from utils.json_parsing import (
+  data_to_json
+)
+
 from organization import (
   organize_directory
 )
@@ -64,18 +68,18 @@ def get_mode():
     print("\n\tSelect the mode in which you want your directory to be organized:\t\n")
     print("1. Rename and Organize by Content (Type 1).")
     print("2. Organize by File Type (Type 2).")
-    print("3. Organize by Date (Type 3).")
+    print("3. Organize by Date (Type 3).\n")
     
     mode = int(input("Enter an option: "))
 
     if (mode == 1):
-      print("[Butler AI] Mode of directory organization: Rename and Organize by Content")
+      print("[Butler AI] Mode of directory organization: Rename and Organize by Content\n")
       return mode
     elif (mode == 2):
-      print("[Butler AI] Mode of directory organization: By File Type")
+      print("[Butler AI] Mode of directory organization: By File Type\n")
       return mode
     elif (mode == 3):
-      print("[Butler AI] Mode of directory organization: By Date")
+      print("[Butler AI] Mode of directory organization: By Date\n")
       return mode
     else:
       print("Enter a valid mode option.")
@@ -127,6 +131,15 @@ def start():
     while (not os.path.isdir(directory_path)):
       print(f"The directory {directory_path} doesn't exist. Enter a valid directory path")
       directory_path = input("Enter a valid path of the directory to organzie: ")
+    
+    abs_path = os.path.abspath(directory_path)
+    
+    # Creating "app_files" folder to contain log file and json datas
+    app_dir = "app_files"
+    if not os.path.exists(app_dir):
+      os.mkdir(app_dir)
+
+    print("\n[Butler AI] Created app file to store application data...")
   
     # Excluding hidden files from the directory list
 
@@ -134,7 +147,7 @@ def start():
     which start with "."
     '''
 
-    visible_files = exclude_hidden_files(directory_path)
+    visible_files = exclude_hidden_files(abs_path,directory_path)
 
     # Listing the files in the directory
     print("\n")
@@ -143,7 +156,7 @@ def start():
     print("+===========================================+")
     print("\n")
   
-    print(os.path.abspath(directory_path))
+    print(abs_path)
     display_directory_tree(directory_path)
 
     '''
@@ -171,7 +184,7 @@ def start():
         end = time.time()
     
         print("[Butler AI] Text file content are extracted and ready to be fed to the model")
-        print(f"[Butler AI Time Stats] Time Taken to read and extract file contents: {end-start:.2f} seconds")
+        print(f"[Butler AI Time Stats] Time Taken to read and extract file contents: {end-start:.2f} seconds\n")
     
         # Feeding the extracted content into the Gemma3:4b model and get appropriate file descriptions and file name.
         start = time.time()
@@ -198,15 +211,11 @@ def start():
         print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
         print()
 
-        # Storing the generated file names in a list (convert to JSON)
-        file_names = []
-        for text_file in text_files_data:
-          file_names.append([text_file["generated_file_name"],text_file["original_file_name"]])
-        for image_file in image_files_data:
-          file_names.append([image_file["generated_file_name"],image_file["original_file_name"]])
+        # Storing the generated file names in JSON object
+        file_obj = data_to_json(app_dir,text_files_data,image_files_data)
         
         # Generating folder names and returning as JSON
-        folder_object = generate_folder_json(file_names,local_client)
+        folder_object = generate_folder_json(app_dir,file_obj,local_client)
 
         print("\n")
         print("+==================================+")
@@ -215,7 +224,7 @@ def start():
         print("\n")
 
         # Suggested Directory Structure
-        print(os.path.abspath(directory_path))
+        print(abs_path)
         display_suggested_dir_tree(directory_path,folder_object,video_files,audio_files)
 
       # Ask user if performed changes are as expected

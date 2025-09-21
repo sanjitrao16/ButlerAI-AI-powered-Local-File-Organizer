@@ -54,7 +54,7 @@ def classify_image(image_file):
   if word_count > 25:
     return (1,meta_data,text)
   else: 
-    return (2,meta_data,None)
+    return (2,meta_data,text)
 
 def categorize_image_files(image_files,workers=4):
   ''' Before feeding data directly to the model, we classify the image into the two categories

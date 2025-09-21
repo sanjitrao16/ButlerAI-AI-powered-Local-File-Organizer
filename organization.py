@@ -13,13 +13,13 @@ def organize_directory(path,folder_obj,video_files,audio_files):
   # Renaming files based on the generated suggestions
   folder_obj = rename_files(path,folder_obj)
 
-  # Organizing Video Files into a generic "Videos" folder
+  # # Organizing Video Files into a generic "Videos" folder
   organize_video_files(path,video_files)
 
-  # Organizing Audio Files into a generic "Audios" folder
+  # # Organizing Audio Files into a generic "Audios" folder
   organize_audio_files(path,audio_files)
 
-  # Organizing the renamed file into the generated folder suggestions
+  # # Organizing the renamed file into the generated folder suggestions
   organize_gen_files(path,folder_obj)
 
   end = time.time()

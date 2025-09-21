@@ -9,6 +9,10 @@ from .file_processing import (
     process_spreadsheet_file
 )
 
+from .json_parsing import (
+    display_json
+)
+
 def extract_text_content(file_path):
     ''' Extracting file content for different types of files '''
     ext = os.path.splitext(file_path)[1].lower()
@@ -59,12 +63,12 @@ def separate_files_by_type(files):
     
     return video_files,audio_files,image_files,text_files
 
-def exclude_hidden_files(dir_path):
+def exclude_hidden_files(abs_path,dir_path):
     ''' Excludes hidden files as per UNIX File Naming convention that is files starting with "." '''
     files = []
     for file in os.listdir(dir_path):
         if (os.path.isfile(os.path.join(dir_path,file)) and (not file.startswith("."))):
-            files.append(os.path.abspath(os.path.join(dir_path,file)))
+            files.append(os.path.join(abs_path,file))
     return files
 
 def process_text_files(text_files,workers=4):
@@ -81,6 +85,7 @@ def display_suggested_dir_tree(existing_path,json_data,video_files,audio_files):
     display_audio_files(audio_files)
     display_existing(existing_path)
     display_json(json_data)
+    print()
 
 def display_video_files(video_files):
     ''' Folder name -> Videos/'''
@@ -123,23 +128,3 @@ def display_existing(path):
         indent = '│   ' * (level - 1)
         for file in files:
             print(f"{indent}│   └── {file}")
-
-def display_json(data,prefix=""):
-    ''' Displaying the JSON data in directory tree format '''
-    if "folders" in data and isinstance(data["folders"], list):
-        folders = data["folders"]
-        pointers = ['├── '] * (len(folders) - 1) + ['└── ']
-        for i,folder in enumerate(folders): # Iterating over each of the suggested folder
-            pointer = pointers[i]
-            folder_name = folder.get("folder_name","Unknown Folder").strip()
-            print(prefix+pointer+"."+folder_name+"/")
-
-            files = folder.get("files",[]) # Getting individual files
-            if files:
-                extension = "|   " if pointer == "├── " else "    "
-                file_pointers = ["├── "] * (len(files) - 1) + ["└── "]
-                for j, file in enumerate(files):
-                    file_pointer = file_pointers[j]
-                    file_name = file.get("generated_name", "Unknown File")
-                    print(prefix + extension + file_pointer + file_name)
-        
