@@ -79,7 +79,7 @@ def process_text_files(text_files,workers=4):
             results[file_path] = content
     return results
 
-def display_suggested_dir_tree(existing_path,json_data,video_files,audio_files):
+def display_suggested_dir_tree(existing_path,json_data,video_files=[],audio_files=[]):
     ''' Calling four functions to print the overall suggested directory tree '''
     display_video_files(video_files)
     display_audio_files(audio_files)

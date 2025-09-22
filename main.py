@@ -28,7 +28,8 @@ from data_generation.folder_generation import (
 )
 
 from utils.json_parsing import (
-  data_to_json
+  data_to_json,
+  json_by_file
 )
 
 from organization import (
@@ -222,6 +223,19 @@ def start():
         # Suggested Directory Structure
         print(abs_path)
         display_suggested_dir_tree(directory_path,folder_object,video_files,audio_files)
+      
+      elif mode == 2: # Organize by File Type
+        # Separating files by types (video, audio, image, text)
+        video_files, audio_files, image_files, text_files = separate_files_by_type(visible_files)
+        folder_object = json_by_file(app_dir,text_files,image_files)
+
+        print("\n+==================================+")
+        print("|  Suggested Directory Structure   |")
+        print("+==================================+\n")
+
+        # Suggested Directory Structure
+        print(abs_path)
+        display_suggested_dir_tree(directory_path,folder_object,video_files,audio_files)
 
       # Ask user if performed changes are as expected
       accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")
@@ -231,7 +245,7 @@ def start():
 
         # Organizing the directory
         organize_directory(
-          directory_path,folder_object,video_files,audio_files
+          directory_path,folder_object,video_files,audio_files,mode
         )
 
         break # Exit mode loop

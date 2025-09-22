@@ -23,7 +23,7 @@ The application has a wide range of features which work together in providing a 
 6. **Multiple organization methods**
    - The application offers 3 different directory organization methods which are _by content_, _by file type_ and _by date_.
 
-## How it works:
+## How it works
 
 This powerful and intelligent file organizer utilizes the capabilities of the advanced AI models to smartly rename your files and categorize them into meaningful folders, ultimately keeping your directory clean and
 easy to navigate. The application is predominantly developed using the **Ollama platform** which offers a variety of Large Language Models (LLMs) to be run locally. The application leverages the
@@ -46,7 +46,7 @@ The application follows the following approach in understanding file contents:
 The AI model which is being used in the application is the `gemma3:4b` vision-model developed by **Google**. This is a multimodal AI model that processes both text and image inputs and generates text outputs. This
 model perfectly suites the purpose and scope of this project given its capability to process variety of input files. The model also offers a large **128K token** context window allowing it to process longer inputs which
 generally is the case, considering either files can have a large amount of data or the number of files in the directory might be many. Furthermore, the model used has 4-billion parameters and that is due to certain
-computational power and resource constraints. However, with a better infrastructure the same application can be developed using even more powerful models.
+computational power and resource constraints.
 
 Link to the model: [`gemma3:4b`](https://ollama.com/library/gemma3)
 

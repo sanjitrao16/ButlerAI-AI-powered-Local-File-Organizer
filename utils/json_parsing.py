@@ -2,6 +2,11 @@ import json
 import os
 import time
 
+from .sort_files import (
+   sort_text_files,
+   sort_image_files
+)
+
 def cleaned_json_output(json_output):
   # Clean the response and get only the JSON File
   try:
@@ -49,10 +54,29 @@ def data_to_json(app_dir,text_files,image_files):
   
   with open(os.path.join(app_dir,data_fname),"w") as file:
      json.dump(file_data,file,indent=4)
-     print("[Butler AI] Converted generated data into JSON format.")
-     print()
+     print("[Butler AI] Converted generated data into JSON format.\n")
 
   return file_data
+
+def json_by_file(app_dir,text_files,image_files):
+   folder_object = {
+      "folders":[]
+   }
+
+   textual_files = sort_text_files(text_files)
+   visual_files = sort_image_files(image_files)
+
+   for file_object in textual_files:
+      folder_object["folders"].append(file_object)
+
+   folder_object["folders"].append(visual_files)
+
+   folder_fname = "folder_by_file.json"
+   with open(os.path.join(app_dir,folder_fname),"w") as file:
+      json.dump(folder_object,file,indent=4)
+      print("[Butler AI] JSON file for organization by file type created.\n")
+
+   return folder_object
   
 def display_json(data,prefix=""):
     ''' Displaying the JSON data in directory tree format '''
