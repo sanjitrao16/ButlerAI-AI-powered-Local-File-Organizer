@@ -55,7 +55,7 @@ The application follows the following approach in understanding file contents:
 ├── cs_book.pdf
 ├── DSC_1001.jpg
 ├── image.jpg
-├── itenarary.docx
+├── itinerary.docx
 ├── math_book.pdf
 ├── short_film.mp4
 ├── receipt.pdf
