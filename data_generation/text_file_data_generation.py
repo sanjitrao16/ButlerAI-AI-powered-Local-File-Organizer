@@ -29,7 +29,9 @@ def generate_file_description(text,local_client):
 
 def generate_text_file_name(file,file_description,local_client):
   file_name_prompt = f'''You are tasked to provide a short and clear file name based on the file description provided, use plain
-  english and the file name should capture the file's essence and clearly convey the topic it contains. Avoid special characters, limit the filename to a maximum of 3 words, connect words with underscores and do not include file extensions. Each word of the file name should have the starting letter capitalized. Descriptions which contain year or month as a pivotal factor or keywords like "textbook", "research", "draft", "report", "article" should be included in the filename.
+  english and the file name should capture the file's essence and clearly convey the topic it contains. Avoid special characters, limit the filename to a maximum of 3 words, connect words with underscores and do not include file extensions. Each word of the file name should have the starting letter capitalized. Descriptions which contain year, month and time period as a pivotal factor or keywords like "textbook", "research", "draft", "report", "article" should be included in the filename.
+
+  Moreover, descriptions which talk about certain bills or receipts should have the year or month in the file name.
   
   File Description: {file_description}
 
@@ -42,6 +44,9 @@ def generate_text_file_name(file,file_description,local_client):
 
   2. File Description: Presentation on upcoming marketing campaign ideas
      Filename: Marketing_Campaign_Ideas
+  
+  3. File Description: Utility bill for the month of October 2024
+     Filename: Electricity_Bill_Oct_2024
 
   File Name:'''
 

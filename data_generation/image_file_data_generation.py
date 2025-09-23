@@ -63,7 +63,7 @@ def generate_image_caption(file,text,local_client):
   response = local_client.chat(
     model= "gemma3:4b",
     messages= [
-      {"role": "user","content": caption_prompt,'images':[file]}
+      {"role": "user","content": caption_prompt,'images':[f"{file}"]}
     ]
   )
 
@@ -71,7 +71,7 @@ def generate_image_caption(file,text,local_client):
   img_caption = response['message']['content'].strip()
 
   print("\n---------------------------------")
-  print(f"Generated Image Caption\t\n\n{img_caption}")
+  print(f"Generated Image Caption\t\n\n{img_caption}\n")
 
   print(f"[Butler AI Time Stats] Time taken to generate image caption: {end-start:.2f} seconds\n")
 

@@ -17,7 +17,7 @@ def generate_folder_json(app_dir,filenames,local_client):
   - `"id"`: File ID (do not change).
 
   TASK:
-  Your task is to group these files into meaningful and logically named folders by analysing similarites, patterns and meaning based on the "generated_file_name" key. Limit the folder name to a maximum of 2 words, underscore separated, no punctuation, use nouns and avoid verbs. Group files into **as few folders** as possible and also retaining the semantic meaning of the folders.
+  Your task is to group these files into meaningful and logically named folders by analysing similarites, patterns and meaning based on the "generated_file_name" key. Limit the folder name to a maximum of 2 words, underscore separated, no punctuation, use nouns and avoid verbs. Group files into **as few folders** as possible and also retaining the semantic meaning of the folders. **Do not always categorize files on the basis of the file extensions**.
 
   OUTPUT RULES (must be followed exactly):
   1. Return **only** a single valid JSON object as the output and no additional text or explanations.

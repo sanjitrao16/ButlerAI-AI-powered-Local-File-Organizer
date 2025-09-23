@@ -41,6 +41,67 @@ The application follows the following approach in understanding file contents:
 
 - Furthermore, based on the above approach, relevant folder names are generated and then properly categorize the files into them.
 
+## Observed Results
+
+### Before
+
+```
+
+./users/user/home/unorganized_dir
+├── bill1.pdf
+├── bill2.pdf
+├── class_notes.docx
+├── course_plan.txt
+├── cs_book.pdf
+├── DSC_1001.jpg
+├── image.jpg
+├── itenarary.docx
+├── math_book.pdf
+├── short_film.mp4
+├── receipt.pdf
+├── stock_image.jpeg
+├── team_presentation.pptx
+├── travel_plan.docx
+├── year_planner.txt
+├── DSC_0091.jpg
+
+16 files 0 directories
+
+```
+
+### After
+
+```
+
+./users/user/home/unorganized_dir
+├── ./Activities
+|   └── Web_Development_Course_Plan_2025.txt
+|   └── Internships_Calendar_2025.txt
+├── ./Bills
+|   └── Electric_Bill_Aug_2025.pdf
+|   └── Electric_Bill_Oct_2025.pdf
+|   └── Tuition_Bill_2025_Nov_15.pdf
+├── ./Education
+|   └── JavaScript_Fundamentals_Notes.docx
+|   └── Linear_Algebra_Textbook_10th_Edition.pdf
+|   └── Operating_Systems_Concepts_7thEdition.pdf
+|   └── HashMap_Concepts.jpg
+├── ./Images
+|   └── Casual_Photo.jpg
+|   └── Woman_Sitting.jpg
+|   └── Water_Reflection_Scene.jpeg
+├── ./Research
+|   └── Mental_Health_Disorders.pptx
+├── ./Travel
+|   └── Iceland_Travel_Itinerary_2025.docx
+|   └── New_Zealand_Travel_Itinerary_2025.docx
+├── ./Videos
+|   └── short_film.mp4
+
+16 files 7 directories
+
+```
+
 ## About the model
 
 The AI model which is being used in the application is the `gemma3:4b` vision-model developed by **Google**. This is a multimodal AI model that processes both text and image inputs and generates text outputs. This
