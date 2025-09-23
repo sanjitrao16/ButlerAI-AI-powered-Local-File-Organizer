@@ -6,13 +6,13 @@ from utils.file_renaming import (
   rename_files
 )
 
-def organize_directory(path,folder_obj,video_files,audio_files,mode):
+def organize_directory(path,folder_obj,mode,app_dir,video_files=[],audio_files=[]):
   print(f"[Butler AI] Started to make changes in directory {path}")
   start = time.time()
 
   # Renaming files based on the generated suggestions
-  if mode == 1:
-    folder_obj = rename_files(path,folder_obj)
+  if mode == 1: # When mode of organization is "by file content"
+    folder_obj = rename_files(path,folder_obj,app_dir)
     print("[Butler AI] Files are successfully renamed into the the generated names")
 
   # # Organizing Video Files into a generic "Videos" folder
@@ -24,8 +24,8 @@ def organize_directory(path,folder_obj,video_files,audio_files,mode):
   # # Organizing the renamed file into the generated folder suggestions
   if mode == 1:
     organize_gen_files(path,folder_obj)
-  elif mode == 2:
-    organize_by_file(path,folder_obj)
+  else:
+    organize_by_file_date(path,folder_obj) # Organizing by file types or date
 
   end = time.time()
 
@@ -91,7 +91,7 @@ def organize_gen_files(path,folder_obj):
       except Exception as e:
         print(f"[Butler AI] Error occured, {e}")
 
-def organize_by_file(path,folder_obj):
+def organize_by_file_date(path,folder_obj):
   # Organzing files by file type
   folders = folder_obj["folders"]
   for folder in folders:

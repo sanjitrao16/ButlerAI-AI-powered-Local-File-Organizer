@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
+import json
 
-def rename_files(path,folder_obj):
+def rename_files(path,folder_obj,app_dir):
   # Renaming files based on the data present in the JSON object
   folders = folder_obj["folders"]
   for folder in folders:
@@ -26,5 +27,9 @@ def rename_files(path,folder_obj):
         print(f"[Butler AI] File with the name {renamed_file_name} already exists.")
       except Exception as e:
         print(f"[Butler AI] Error occurred, {e}")
+      
+      # Updating the folder_structure.json file
+      with open(os.path.join(app_dir,"folder_structure.json"),"w") as file:
+        json.dump(folder_obj,file,indent=4)
       
   return folder_obj # Updated folder object

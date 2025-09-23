@@ -4,7 +4,12 @@ import time
 
 from .sort_files import (
    sort_text_files,
-   sort_image_files
+   sort_image_files,
+   sort_files_by_year
+)
+
+from organize_by_date import (
+   group_files_by_year
 )
 
 def cleaned_json_output(json_output):
@@ -59,24 +64,46 @@ def data_to_json(app_dir,text_files,image_files):
   return file_data
 
 def json_by_file(app_dir,text_files,image_files):
+   ''' JSON structure for text based and image based files '''
    folder_object = {
       "folders":[]
    }
 
-   textual_files = sort_text_files(text_files)
-   visual_files = sort_image_files(image_files)
+   textual_files = sort_text_files(text_files) # Sorting text files
+   visual_files = sort_image_files(image_files) # Sorting image files
 
    for file_object in textual_files:
       folder_object["folders"].append(file_object)
 
    folder_object["folders"].append(visual_files)
 
-   folder_fname = "folder_by_file.json"
+   folder_fname = "folder_by_file.json" # Storing the JSON structure in a file
    with open(os.path.join(app_dir,folder_fname),"w") as file:
       json.dump(folder_object,file,indent=4)
       print("[Butler AI] JSON file for organization by file type created.\n")
 
    return folder_object
+
+def json_by_year(app_dir,files):
+   ''' JSON structure for files based on the year '''
+   folder_object = {
+      "folders": []
+   }
+
+   file_years = group_files_by_year(files) # Grouping files based on year
+   
+   for year,file_list in file_years.items():
+      file_object = sort_files_by_year(year,file_list) # Sorting files by year
+      folder_object["folders"].append(file_object)
+
+   folder_fname = "folder_by_year.json" # Storing the JSON structure in a file
+
+   with open(os.path.join(app_dir,folder_fname),"w") as file:
+    json.dump(folder_object,file,indent=4)
+    print("[Butler AI] JSON file for organization by year created.\n")
+
+   return folder_object
+       
   
 def display_json(data,prefix=""):
     ''' Displaying the JSON data in directory tree format '''

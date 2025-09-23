@@ -29,11 +29,12 @@ from data_generation.folder_generation import (
 
 from utils.json_parsing import (
   data_to_json,
-  json_by_file
+  json_by_file,
+  json_by_year
 )
 
 from organization import (
-  organize_directory
+  organize_directory,
 )
 
 local_client = ollama.Client(host="http://localhost:11434")
@@ -96,6 +97,24 @@ def interpret_response(text):
       return False
     else:
       print("Enter either yes or no")
+
+def get_organize_type():
+  ''' User enters which way to organize the directory '''
+  while True:
+    print("\n\tSelect the way in which the files have to be organized: \t\n")
+    print("1. By Year (Type 1).")
+    print("2. By Year-Month (Type 2).\n")
+
+    organize_type = int(input("Enter an option: "))
+
+    if organize_type == 1:
+      print("[Butler AI] Way of directory organization: By Year\n")
+      return organize_type
+    elif organize_type == 2:
+      print("[Butler AI] Way of directory organization: By Year-Month\n")
+      return organize_type
+    else:
+      print("Enter a valid option.")
 
 def start():
   print("+======================================+")
@@ -191,7 +210,7 @@ def start():
         end = time.time()
 
         print("[Butler AI] Generated text file attributes")
-        print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
+        print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds\n")
 
         # Categorizing image files on how text-heavy it is
         start = time.time()
@@ -199,7 +218,7 @@ def start():
         end = time.time()
 
         print("[Butler AI] Categorized image files into relevant categories")
-        print(f"[Butler AI Time Stats] Total Time Taken to categorize image files: {end-start:.2f} seconds")
+        print(f"[Butler AI Time Stats] Total Time Taken to categorize image files: {end-start:.2f} seconds\n")
 
         # Feeding the categorized image files into the Gemma3:4b model to get appropriate image captions and file names
         start = time.time()
@@ -207,8 +226,7 @@ def start():
         end = time.time()
 
         print("[Butler AI] Generated image file attributes")
-        print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds")
-        print()
+        print(f"[Butler AI Time Stats] Total Time Taken to generate file attributes: {end-start:.2f} seconds\n")
 
         # Storing the generated file names in JSON object
         file_obj = data_to_json(app_dir,text_files_data,image_files_data)
@@ -225,8 +243,18 @@ def start():
         display_suggested_dir_tree(directory_path,folder_object,video_files,audio_files)
       
       elif mode == 2: # Organize by File Type
+        ''' Organizing files based on the file types
+
+        1. Text files: Are categorized into multiple folders based on each file type. (e.g: .pdf files in PDF folder, .ppt files
+        in Presentations folder etc.)
+
+        2. Image files: Are categorized into a single Images folder
+        
+        '''
         # Separating files by types (video, audio, image, text)
         video_files, audio_files, image_files, text_files = separate_files_by_type(visible_files)
+
+        # Creating a JSON structure where text-based and image-based files are organized into its folders.
         folder_object = json_by_file(app_dir,text_files,image_files)
 
         print("\n+==================================+")
@@ -236,6 +264,30 @@ def start():
         # Suggested Directory Structure
         print(abs_path)
         display_suggested_dir_tree(directory_path,folder_object,video_files,audio_files)
+      
+      elif mode == 3: # Organize by Date
+        ''' Organizing files based on the dates 
+
+        1. Year wise -> Files are organized into directory based on the years
+        2. Year-Month wise -> Files are organized into directory based on the month
+
+        '''
+        organize_type = get_organize_type()
+
+        if organize_type == 1: # Year wise
+          # Getting the folder structure (year wise)
+          folder_object = json_by_year(app_dir,visible_files)
+
+          print("\n+==================================+")
+          print("|  Suggested Directory Structure   |")
+          print("+==================================+\n")
+
+          # Suggested Directory Structure
+          print(abs_path)
+          display_suggested_dir_tree(directory_path,folder_object)
+
+        elif organize_type == 2: # Year-Month wise
+          pass
 
       # Ask user if performed changes are as expected
       accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")
@@ -243,9 +295,13 @@ def start():
       if accept_changes:
         print("[Butler AI] User has accepted changes...Proceeding to apply..")
 
+        if (mode == 3):
+          organize_directory(directory_path,folder_object,mode,app_dir)
+          break
+
         # Organizing the directory
         organize_directory(
-          directory_path,folder_object,video_files,audio_files,mode
+          directory_path,folder_object,mode,app_dir,video_files,audio_files
         )
 
         break # Exit mode loop
