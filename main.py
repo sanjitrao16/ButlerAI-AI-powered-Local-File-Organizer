@@ -30,7 +30,8 @@ from data_generation.folder_generation import (
 from utils.json_parsing import (
   data_to_json,
   json_by_file,
-  json_by_year
+  json_by_year,
+  json_by_year_month
 )
 
 from organization import (
@@ -287,7 +288,17 @@ def start():
           display_suggested_dir_tree(directory_path,folder_object)
 
         elif organize_type == 2: # Year-Month wise
-          pass
+          # Getting the folder structure (year-month wise)
+          folder_object = json_by_year_month(app_dir,visible_files)
+
+          print("\n+==================================+")
+          print("|  Suggested Directory Structure   |")
+          print("+==================================+\n")
+
+          # Suggested Directory Structure
+          print(abs_path)
+          display_suggested_dir_tree(directory_path,folder_object)
+
 
       # Ask user if performed changes are as expected
       accept_changes = interpret_response("Are you satisfied with the mentioned changes? (Yes/No): ")

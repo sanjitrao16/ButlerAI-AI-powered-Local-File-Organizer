@@ -23,12 +23,17 @@ def generate_image_filename_ocr(file,text,local_client):
 
   end = time.time()
   filename = response['message']['content'].strip()
-  print()
-  print("---------------------------------")
-  print(f"\tOriginal Filename: {file}\t Suggested Filename: {filename}\t")
-  print("---------------------------------")
-  print()
-  print(f"[Butler AI Time Stats] Time taken to generate file name: {end-start:.2f} seconds")
+
+  print(f"\t{file}")
+
+  print("\n---------------------------------")
+  print(f"Generated Image Caption\t\n\nNO CAPTION GENERATED\n")
+  print("Generated File Name\t\n")
+  print(f"Original Filename: {file}")
+  print(f"Suggested Filename: {filename}\n")
+
+  print(f"[Butler AI Time Stats] Time taken to generate file name: {end-start:.2f} seconds\n")
+  print("---------------------------------\n")
 
   generated_attributes = {
     "original_file_name": file,
@@ -64,12 +69,11 @@ def generate_image_caption(file,text,local_client):
 
   end = time.time()
   img_caption = response['message']['content'].strip()
-  print()
-  print("---------------------------------")
-  print(f"Generated Image Caption: {img_caption}")
-  print("---------------------------------")
-  print()
-  print(f"[Butler AI Time Stats] Time taken to generate image caption: {end-start:.2f} seconds")
+
+  print("\n---------------------------------")
+  print(f"Generated Image Caption\t\n\n{img_caption}")
+
+  print(f"[Butler AI Time Stats] Time taken to generate image caption: {end-start:.2f} seconds\n")
 
   return img_caption
 
@@ -97,12 +101,13 @@ def generate_file_name(file,caption,local_client):
 
   end = time.time()
   filename = response['message']['content'].strip()
-  print()
-  print("---------------------------------")
-  print(f"\tOriginal Filename: {file}\t Suggested Filename: {filename}\t")
-  print("---------------------------------")
-  print()
-  print(f"[Butler AI Time Stats] Time taken to generate file name: {end-start:.2f} seconds")
+
+  print("Generated File Name\t\n")
+  print(f"Original Filename: {file}")
+  print(f"Suggested Filename: {filename}\n")
+
+  print(f"[Butler AI Time Stats] Time taken to generate file name: {end-start:.2f} seconds\n")
+  print("---------------------------------\n")
   
   return filename
 
@@ -115,6 +120,8 @@ def generate_image_attributes(file,text,local_client):
   2. From the generated caption, a file name is suggested (maximum of 3 words).
   
   '''
+
+  print(f"\t{file}\n")
 
   # Generating image caption
   caption = generate_image_caption(file,text,local_client)

@@ -1,15 +1,16 @@
 import json
 import os
-import time
 
 from .sort_files import (
    sort_text_files,
    sort_image_files,
-   sort_files_by_year
+   sort_files_by_year,
+   sort_files_by_year_month
 )
 
-from organize_by_date import (
-   group_files_by_year
+from group_by_date import (
+   group_files_by_year,
+   group_files_by_year_month
 )
 
 def cleaned_json_output(json_output):
@@ -91,7 +92,7 @@ def json_by_year(app_dir,files):
    }
 
    file_years = group_files_by_year(files) # Grouping files based on year
-   
+
    for year,file_list in file_years.items():
       file_object = sort_files_by_year(year,file_list) # Sorting files by year
       folder_object["folders"].append(file_object)
@@ -103,8 +104,27 @@ def json_by_year(app_dir,files):
     print("[Butler AI] JSON file for organization by year created.\n")
 
    return folder_object
+
+def json_by_year_month(app_dir,files):
+   ''' JSON structure for files based on year-month '''
+   folder_object = {
+      "folders": []
+   }
+
+   file_year_month = group_files_by_year_month(files) # Grouping files based on year-month
+
+   for year_month,file_list in file_year_month.items():
+      file_object = sort_files_by_year_month(year_month,file_list) # Sorting files by year-month
+      folder_object["folders"].append(file_object)
+   
+   folder_fname = "folder_by_year_month.json" # Storing the JSON structure in a file
+
+   with open(os.path.join(app_dir,folder_fname),"w") as file:
+      json.dump(folder_object,file,indent=4)
+      print("[Butler AI] JSON file for organization by year created.\n")
+
+   return folder_object
        
-  
 def display_json(data,prefix=""):
     ''' Displaying the JSON data in directory tree format '''
     if "folders" in data and isinstance(data["folders"], list):

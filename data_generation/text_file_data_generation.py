@@ -21,12 +21,9 @@ def generate_file_description(text,local_client):
 
   end = time.time()
   description = response['message']['content'].strip()
-  print()
-  print("---------------------------------")
-  print(f"\t{description}\t")
-  print("---------------------------------")
-  print()
-  print(f"[Butler AI Time Stats] Time taken to generate file description: {end-start:.2f} seconds")
+  print("\n---------------------------------")
+  print(f"Generated File Description\t\n\n{description}\n")
+  print(f"[Butler AI Time Stats] Time taken to generate file description: {end-start:.2f} seconds\n")
 
   return description
 
@@ -58,12 +55,11 @@ def generate_text_file_name(file,file_description,local_client):
 
   end = time.time()
   filename = response['message']['content'].strip()
-  print()
-  print("---------------------------------")
-  print(f"\tOriginal Filename: {file}\t Suggested Filename: {filename}\t")
-  print("---------------------------------")
-  print()
-  print(f"[Butler AI Time Stats] Time taken to generate file name: {end-start:.2f} seconds")
+  print("Generated File Name\t\n")
+  print(f"Original Filename: {file}")
+  print(f"Suggested Filename: {filename}\n")
+  print(f"[Butler AI Time Stats] Time taken to generate file name: {end-start:.2f} seconds\n")
+  print("---------------------------------\n")
 
   return filename
 
@@ -76,6 +72,8 @@ def generate_text_file_attributes(file,text,local_client):
   2. From the generated description, a file name is suggested (maximum of 3 words).
   
   '''
+
+  print(f"\t{file}")
 
   # Generating file description
   description = generate_file_description(text,local_client)

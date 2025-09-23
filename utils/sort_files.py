@@ -1,5 +1,4 @@
 import os
-import datetime
 
 def sort_text_files(text_files):
     doc_file_object = {
@@ -78,6 +77,26 @@ def sort_files_by_year(year,file_list):
          "original_file_name": file,
          "generated_file_name": file_name,
       }
+      files.append(file_object)
+   
+   folder_object["files"] = files
+   
+   return folder_object
+
+def sort_files_by_year_month(year_month,file_list):
+   folder_object = {
+      "folder_name": year_month
+   }
+
+   files = []
+
+   for file in file_list:
+      file_name = os.path.basename(file)
+      file_object = {
+         "original_file_name":file,
+         "generated_file_name": file_name,
+      }
+
       files.append(file_object)
    
    folder_object["files"] = files
